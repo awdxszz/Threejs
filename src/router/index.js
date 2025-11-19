@@ -85,6 +85,18 @@ const routes = [
     name: "load-gltf",
     component: () => import("../views/LoadGLTF.vue"),
   },
+  // 场景交互
+  {
+    path: "/scene-interaction",
+    name: "scene-interaction",
+    component: () => import("../views/SceneInteraction.vue"),
+  },
+  // 补间动画
+  {
+    path: "/tween-animation",
+    name: "tween-animation",
+    component: () => import("../views/TweenAnimation.vue"),
+  },
   {
     path: "/settings",
     name: "settings",

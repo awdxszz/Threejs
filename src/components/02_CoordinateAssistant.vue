@@ -3,7 +3,6 @@
 import * as THREE from "three";
 import { onMounted, onUnmounted } from "vue";
 import {
-  getAdjustedContentSize,
   resizeRendererToLayout,
   getContainerLayoutSize,
 } from "../utils/layout.js";

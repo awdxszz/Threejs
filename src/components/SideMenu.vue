@@ -1,13 +1,17 @@
 <script setup>
 import { ref } from "vue";
 import { RouterLink, useRouter, useRoute } from "vue-router";
+// 引入lucide-vue-next图标组件
 import {
-  BgColorsOutlined,
-  HighlightOutlined,
-  DashboardOutlined,
-  PlayCircleOutlined,
-  SettingOutlined,
-} from "@ant-design/icons-vue";
+  Smile,
+  Bird,
+  Cat,
+  Helicopter,
+  Bone,
+  Hop,
+  Ham,
+  BicepsFlexed,
+} from "lucide-vue-next";
 
 const props = defineProps({
   collapsed: {
@@ -26,7 +30,7 @@ const menuItems = [
   {
     key: "first",
     title: "初出茅庐",
-    icon: DashboardOutlined,
+    icon: Smile,
     children: [
       {
         key: "dashboard",
@@ -43,7 +47,7 @@ const menuItems = [
   {
     key: "second",
     title: "崭露头角",
-    icon: PlayCircleOutlined,
+    icon: Bird,
     children: [
       {
         key: "basic-animation",
@@ -95,7 +99,7 @@ const menuItems = [
   {
     key: "third",
     title: "小有成就",
-    icon: HighlightOutlined,
+    icon: Cat,
     children: [
       {
         key: "fog",
@@ -107,12 +111,22 @@ const menuItems = [
         title: "加载GLTF模型",
         path: "/load-gltf",
       },
+      {
+        key: "scene-interaction",
+        title: "场景交互",
+        path: "/scene-interaction",
+      },
+      {
+        key: "tween-animation",
+        title: "补间动画",
+        path: "/tween-animation",
+      },
     ],
   },
   {
     key: "fourth",
     title: "渐入佳境",
-    icon: BgColorsOutlined,
+    icon: Helicopter,
     children: [
       {
         key: "basic-animation",
@@ -124,7 +138,7 @@ const menuItems = [
   {
     key: "fifth",
     title: "如日中天",
-    icon: SettingOutlined,
+    icon: Hop,
     children: [
       {
         key: "basic-animation",
@@ -136,7 +150,7 @@ const menuItems = [
   {
     key: "sixth",
     title: "风头正劲",
-    icon: SettingOutlined,
+    icon: Ham,
     children: [
       {
         key: "basic-animation",
@@ -148,7 +162,7 @@ const menuItems = [
   {
     key: "sixth",
     title: "稳如老狗",
-    icon: SettingOutlined,
+    icon: Bone,
     children: [
       {
         key: "basic-animation",

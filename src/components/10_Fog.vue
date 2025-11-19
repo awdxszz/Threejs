@@ -10,9 +10,6 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // 导入 lil-gui
 import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-// 导入HDR加载器
-import { HDRCubeTextureLoader } from "three/examples/jsm/loaders/HDRCubeTextureLoader.js";
 
 let scene, camera, renderer, cube, animationId, controls;
 // 初始化场景
