@@ -10,12 +10,10 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // 导入 lil-gui
 import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-// 导入GLTF加载器
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-// 导入HDR加载器
+// 导入 HDR 环境贴图加载器
 import { HDRLoader } from "three/examples/jsm/loaders/HDRLoader.js";
-// 导入Draco加载器
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+// 导入顶点法向量辅助器
+import { VertexNormalsHelper } from "three/examples/jsm/helpers/VertexNormalsHelper.js";
 
 let scene, camera, renderer, animationId, controls;
 // 初始化场景
@@ -110,58 +108,85 @@ function initGui() {
     gui.domElement.style.zIndex = "10";
   }
 
-  // 实例化GLTF加载器
-  const loader = new GLTFLoader();
-  // 配置 Draco 解码器以支持压缩网格
-  const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath(
-    "https://www.gstatic.com/draco/versioned/decoders/1.5.6/"
-  );
-  loader.setDRACOLoader(dracoLoader);
-  // 加载模型
-  loader.load(
-    // 模型路径
-    "/model/Duck.glb",
-    // 加载成功回调
-    function (gltf) {
-      console.log("模型加载成功:", gltf);
-      // 将加载的模型添加到场景中
-      scene.add(gltf.scene);
-    },
-    // 加载进度回调
-    undefined,
-    // 加载失败回调
-    function (error) {
-      console.error("模型加载失败:", error);
-    }
-  );
+  let uvTexture = new THREE.TextureLoader().load("/texture/uv_grid_opengl.jpg");
+  uvTexture.colorSpace = THREE.SRGBColorSpace;
 
-  // 加载城市模型
-  loader.load(
-    // 模型路径
-    "/model/city.glb",
-    // 加载成功回调
-    function (gltf) {
-      console.log("城市模型加载成功:", gltf);
-      // 将加载的模型添加到场景中
-      scene.add(gltf.scene);
-    },
-    // 加载进度回调
-    undefined,
-    // 加载失败回调
-    function (error) {
-      console.error("城市模型加载失败:", error);
-    }
-  );
+  // 创建平面几何体
+  let planeGeometry = new THREE.PlaneGeometry(3, 3);
 
-  // 加载环境贴图
-  const hdrLoader = new HDRLoader();
-  hdrLoader.load("/texture/Alex_Hart-Nature_Lab_Bones_2k.hdr", (texture) => {
-    texture.mapping = THREE.EquirectangularReflectionMapping;
-    console.log("环境贴图加载成功:", texture);
-    // 设置环境贴图
-    scene.environment = texture;
+  // 创建平面材质
+  let planeMaterial = new THREE.MeshStandardMaterial({
+    map: uvTexture,
+    metalness: 1,
+    roughness: 0.2,
   });
+
+  // 创建平面网格
+  let planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+  scene.add(planeMesh);
+
+  // 创建第二个平面几何体
+  let planeGeometry2 = new THREE.PlaneGeometry(3, 3);
+
+  // 创建第二个平面材质
+  let planeMaterial2 = new THREE.MeshStandardMaterial({
+    map: uvTexture,
+    metalness: 1,
+    roughness: 0.2,
+  });
+
+  // 创建第二个平面网格
+  let planeMesh2 = new THREE.Mesh(planeGeometry2, planeMaterial2);
+  scene.add(planeMesh2);
+
+  // 位置第二个平面网格
+  planeMesh2.position.set(4, 0, 0);
+
+  // 设置第二个平面网格的uv坐标[x,y]
+  const uv = new Float32Array([0, 1, 1, 0, 1, 1, 0, 1]);
+  planeGeometry2.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+  planeGeometry2.attributes.uv.needsUpdate = true;
+  // 计算出法线向量
+  // planeGeometry2.computeVertexNormals();
+
+  // 设置法线向量
+  // const normals = new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]);
+  // planeGeometry2.setAttribute("normal", new THREE.BufferAttribute(normals, 3));
+  // planeGeometry2.attributes.normal.needsUpdate = true;
+
+  // 加载环境贴图（使用 PMREM 生成器获得更准确的反射）
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  // 编译等矩形贴图的着色器
+  pmrem.compileEquirectangularShader();
+  // 加载HDR环境贴图
+  const rgbeLoader = new HDRLoader();
+  rgbeLoader.load(
+    "/texture/Alex_Hart-Nature_Lab_Bones_2k.hdr",
+    (hdrTexture) => {
+      // 从 HDR 纹理生成环境贴图
+      const envMap = pmrem.fromEquirectangular(hdrTexture).texture;
+      // 设置场景背景贴图
+      scene.background = envMap;
+      // 设置场景环境贴图
+      scene.environment = envMap;
+      // 设置平面材质环境贴图强度
+      planeMaterial.envMapIntensity = 1.0;
+      // 更新平面材质
+      planeMaterial.needsUpdate = true;
+      // 设置第二个平面材质环境贴图强度
+      planeMaterial2.envMapIntensity = 1.0;
+      // 更新第二个平面材质
+      planeMaterial2.needsUpdate = true;
+      // 释放HDR纹理和PMREM生成器
+      hdrTexture.dispose();
+      // 释放PMREM生成器的渲染目标
+      pmrem.dispose();
+    }
+  );
+
+  // 创建顶点法向量辅助器(对象，辅助线长度，颜色)
+  const vertexNormalsHelper = new VertexNormalsHelper(planeMesh2, 1, 0xff0000);
+  scene.add(vertexNormalsHelper);
 }
 
 // 组件挂载时初始化场景

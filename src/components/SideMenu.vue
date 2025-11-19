@@ -121,6 +121,21 @@ const menuItems = [
         title: "补间动画",
         path: "/tween-animation",
       },
+      {
+        key: "uv-mapping",
+        title: "UV映射",
+        path: "/uv-mapping",
+      },
+      {
+        key: "normal-vector",
+        title: "法线向量",
+        path: "/normal-vector",
+      },
+      {
+        key: "bounding-box-helper",
+        title: "包围盒辅助器",
+        path: "/bounding-box-helper",
+      },
     ],
   },
   {

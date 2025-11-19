@@ -10,12 +10,6 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // 导入 lil-gui
 import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-// 导入GLTF加载器
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-// 导入HDR加载器
-import { HDRLoader } from "three/examples/jsm/loaders/HDRLoader.js";
-// 导入Draco加载器
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 
 let scene, camera, renderer, animationId, controls;
 // 初始化场景
@@ -110,58 +104,39 @@ function initGui() {
     gui.domElement.style.zIndex = "10";
   }
 
-  // 实例化GLTF加载器
-  const loader = new GLTFLoader();
-  // 配置 Draco 解码器以支持压缩网格
-  const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath(
-    "https://www.gstatic.com/draco/versioned/decoders/1.5.6/"
-  );
-  loader.setDRACOLoader(dracoLoader);
-  // 加载模型
-  loader.load(
-    // 模型路径
-    "/model/Duck.glb",
-    // 加载成功回调
-    function (gltf) {
-      console.log("模型加载成功:", gltf);
-      // 将加载的模型添加到场景中
-      scene.add(gltf.scene);
-    },
-    // 加载进度回调
-    undefined,
-    // 加载失败回调
-    function (error) {
-      console.error("模型加载失败:", error);
-    }
-  );
+  let uvTexture = new THREE.TextureLoader().load("/texture/uv_grid_opengl.jpg");
 
-  // 加载城市模型
-  loader.load(
-    // 模型路径
-    "/model/city.glb",
-    // 加载成功回调
-    function (gltf) {
-      console.log("城市模型加载成功:", gltf);
-      // 将加载的模型添加到场景中
-      scene.add(gltf.scene);
-    },
-    // 加载进度回调
-    undefined,
-    // 加载失败回调
-    function (error) {
-      console.error("城市模型加载失败:", error);
-    }
-  );
+  // 创建平面几何体
+  let planeGeometry = new THREE.PlaneGeometry(3, 3);
 
-  // 加载环境贴图
-  const hdrLoader = new HDRLoader();
-  hdrLoader.load("/texture/Alex_Hart-Nature_Lab_Bones_2k.hdr", (texture) => {
-    texture.mapping = THREE.EquirectangularReflectionMapping;
-    console.log("环境贴图加载成功:", texture);
-    // 设置环境贴图
-    scene.environment = texture;
+  // 创建平面材质
+  let planeMaterial = new THREE.MeshBasicMaterial({
+    map: uvTexture,
   });
+
+  // 创建平面网格
+  let planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+  scene.add(planeMesh);
+
+  // 创建第二个平面几何体
+  let planeGeometry2 = new THREE.PlaneGeometry(3, 3);
+
+  // 创建第二个平面材质
+  let planeMaterial2 = new THREE.MeshBasicMaterial({
+    map: uvTexture,
+  });
+
+  // 创建第二个平面网格
+  let planeMesh2 = new THREE.Mesh(planeGeometry2, planeMaterial2);
+  scene.add(planeMesh2);
+
+  // 位置第二个平面网格
+  planeMesh2.position.set(4, 0, 0);
+
+  // 设置第二个平面网格的uv坐标[x,y]
+  const uv = new Float32Array([0, 1, 1, 0, 1, 1, 0, 1]);
+  planeGeometry2.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+  planeGeometry2.attributes.uv.needsUpdate = true;
 }
 
 // 组件挂载时初始化场景

@@ -11,7 +11,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // 导入 lil-gui
 import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-let scene, camera, renderer, cube, animationId, controls;
+let scene, camera, renderer, animationId, controls;
 // 初始化场景
 function initScene() {
   // 创建场景
@@ -180,7 +180,6 @@ onUnmounted(() => {
   scene = null;
   camera = null;
   renderer = null;
-  cube = null;
 });
 </script>
 

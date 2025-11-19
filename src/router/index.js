@@ -97,6 +97,25 @@ const routes = [
     name: "tween-animation",
     component: () => import("../views/TweenAnimation.vue"),
   },
+  // UV映射
+  {
+    path: "/uv-mapping",
+    name: "uv-mapping",
+    component: () => import("../views/UVMapping.vue"),
+  },
+  // 法线向量
+  {
+    path: "/normal-vector",
+    name: "normal-vector",
+    component: () => import("../views/NormalVector.vue"),
+  },
+  // 包围盒辅助器
+  {
+    path: "/bounding-box-helper",
+    name: "bounding-box-helper",
+    component: () => import("../views/BoundingBoxHelper.vue"),
+  },
+  // 渲染设置
   {
     path: "/settings",
     name: "settings",
