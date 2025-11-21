@@ -11,7 +11,13 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // 导入 lil-gui
 import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
-let scene, camera, renderer, animationId, controls;
+let scene,
+  camera,
+  renderer,
+  animationId,
+  controls,
+  interactiveObjects = [],
+  pointerHandler;
 // 初始化场景
 function initScene() {
   // 创建场景
@@ -126,6 +132,8 @@ function initGui() {
   sphere3.position.set(4, 1, 0);
   scene.add(sphere3);
 
+  interactiveObjects = [sphere1, sphere2, sphere3];
+
   // 创建射线
   const raycaster = new THREE.Raycaster();
 
@@ -133,24 +141,20 @@ function initGui() {
   const mouse = new THREE.Vector2();
 
   // 监听窗口的鼠标点击事件
-  window.addEventListener("click", (event) => {
-    // 计算鼠标位置
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    // 更新射线
+  pointerHandler = (event) => {
+    // 计算鼠标位置在渲染器中的归一化设备坐标
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
-
-    // 计算射线与场景中所有物体的交点
-    const intersects = raycaster.intersectObjects(scene.children);
-
-    // 如果有交点，打印交点信息
+    // 计算射线与场景中所有交互对象的交点
+    const intersects = raycaster.intersectObjects(interactiveObjects, false);
     if (intersects.length > 0) {
-      console.log("交点信息:", intersects[0]);
-      // 改变交点物体的颜色为白色
+      // 改变第一个交点对象的颜色为白色
       intersects[0].object.material.color.set(0xffffff);
     }
-  });
+  };
+  renderer.domElement.addEventListener("pointerdown", pointerHandler);
 }
 
 // 组件挂载时初始化场景
@@ -171,6 +175,9 @@ onMounted(() => {
 onUnmounted(() => {
   cancelAnimationFrame(animationId);
   window.removeEventListener("resize", handleResize);
+  if (renderer && renderer.domElement && pointerHandler) {
+    renderer.domElement.removeEventListener("pointerdown", pointerHandler);
+  }
   if (renderer && renderer.domElement) {
     renderer.domElement.parentNode.removeChild(renderer.domElement);
   }

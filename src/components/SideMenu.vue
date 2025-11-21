@@ -136,6 +136,16 @@ const menuItems = [
         title: "包围盒辅助器",
         path: "/bounding-box-helper",
       },
+      {
+        key: "wireframe-geometry",
+        title: "线框几何体",
+        path: "/wireframe-geometry",
+      },
+      {
+        key: "material-advanced",
+        title: "材质进阶",
+        path: "/material-advanced",
+      },
     ],
   },
   {

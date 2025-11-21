@@ -115,6 +115,18 @@ const routes = [
     name: "bounding-box-helper",
     component: () => import("../views/BoundingBoxHelper.vue"),
   },
+  // 线框几何体
+  {
+    path: "/wireframe-geometry",
+    name: "wireframe-geometry",
+    component: () => import("../views/WireframeGeometry.vue"),
+  },
+  // 材质进阶
+  {
+    path: "/material-advanced",
+    name: "material-advanced",
+    component: () => import("../views/MaterialAdvanced.vue"),
+  },
   // 渲染设置
   {
     path: "/settings",

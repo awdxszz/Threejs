@@ -110,60 +110,67 @@ function initGui() {
 
   // 实例化GLTF加载器
   const loader = new GLTFLoader();
-  // 加载模型
+  let duck1, duck2;
+  // 模型1：使用包围盒辅助器
   loader.load(
-    // 模型路径
     "/model/Duck.glb",
-    // 加载成功回调
-    function (gltf) {
-      console.log("模型加载成功:", gltf);
-      // 将加载的模型添加到场景中
-      scene.add(gltf.scene);
+    (gltf) => {
+      duck1 = gltf.scene;
+      duck1.position.set(-3, 0, 0);
+      scene.add(duck1);
 
-      // 获取模型中的小鸭子对象
-      let duckMesh = gltf.scene.getObjectByName("LOD3spShape");
-      // 获取小鸭子的几何体
-      let duckGeometry = duckMesh.geometry;
-      // 计算几何体的包围盒
-      duckGeometry.computeBoundingBox();
-      // 设置几何体居中
-      duckGeometry.center();
-      // 获取几何体的包围盒
-      let boundingBox = duckGeometry.boundingBox;
-      // 更新世界矩阵
-      duckMesh.updateWorldMatrix();
-      // 更新包围盒
-      boundingBox.applyMatrix4(duckMesh.matrixWorld);
-      // 获取包围盒中心点
-      const center = boundingBox.getCenter(new THREE.Vector3());
-      console.log("包围盒中心点:", center);
-      // 创建包围盒辅助器(对象，颜色)
-      const boxHelper = new THREE.Box3Helper(boundingBox, 0xffff00);
+      // 添加包围盒辅助器
+      const box = new THREE.Box3().setFromObject(duck1);
+      // 创建包围盒辅助器
+      const boxHelper = new THREE.Box3Helper(box, 0xffff00);
       scene.add(boxHelper);
+    },
+    undefined, // 加载进度回调
+    (err) => console.error("Duck 加载失败:", err)
+  );
 
-      // 获取包围球
-      let duckSphere = duckGeometry.boundingSphere;
-      // 转换为世界坐标
-      duckSphere.applyMatrix4(duckMesh.matrixWorld);
-      // 创建包围球辅助器(半径，经度分段数，纬度分段数)
-      let sphereGeometry = new THREE.SphereGeometry(duckSphere.radius, 16, 16);
-      // 设置包围球材质
-      let sphereMaterial = new THREE.MeshBasicMaterial({
+  // 模型2：使用包围球辅助器
+  loader.load(
+    "/model/Duck.glb",
+    (gltf) => {
+      duck2 = gltf.scene;
+      duck2.position.set(3, 0, 0);
+      duck2.rotation.y = Math.PI; // 绕Y轴旋转180度
+      scene.add(duck2);
+
+      // 添加包围球辅助器
+      const box = new THREE.Box3().setFromObject(duck2);
+      // 创建包围球辅助器
+      const sphere = new THREE.Sphere();
+      // 计算模型的包围球
+      box.getBoundingSphere(sphere);
+
+      // 创建包围球辅助器
+      const sphereGeometry = new THREE.SphereGeometry(sphere.radius, 24, 16);
+      // 创建材质
+      const sphereMaterial = new THREE.MeshBasicMaterial({
         color: 0xff0000,
         wireframe: true,
       });
-      // 创建包围球辅助器(对象，材质)
-      let sphereHelper = new THREE.Mesh(sphereGeometry, sphereMaterial);
-      // 设置包围球辅助器的位置
-      sphereHelper.position.copy(duckSphere.center);
+      // 创建包围球辅助器
+      const sphereHelper = new THREE.Mesh(sphereGeometry, sphereMaterial);
+      // 位置辅助器的位置设置为模型的包围球中心
+      sphereHelper.position.copy(sphere.center);
       scene.add(sphereHelper);
+
+      // 添加合并包围盒辅助器
+      duck1.updateMatrixWorld(true);
+      duck2.updateMatrixWorld(true);
+      // 合并模型的包围盒
+      const outerBox = new THREE.Box3().setFromObject(duck1);
+      outerBox.union(new THREE.Box3().setFromObject(duck2));
+      // 创建合并包围盒辅助器
+      const outerHelper = new THREE.Box3Helper(outerBox, 0x00ffff);
+      scene.add(outerHelper);
     },
     // 加载进度回调
     undefined,
-    // 加载失败回调
-    function (error) {
-      console.error("模型加载失败:", error);
-    }
+    (err) => console.error("building 加载失败:", err)
   );
 
   // 加载环境贴图（使用 PMREM 生成器获得更准确的反射）
