@@ -146,6 +146,16 @@ const menuItems = [
         title: "材质进阶",
         path: "/material-advanced",
       },
+      {
+        key: "transparent-object",
+        title: "透明对象",
+        path: "/transparent-object",
+      },
+      {
+        key: "clear-object",
+        title: "清除物体",
+        path: "/clear-object",
+      },
     ],
   },
   {
@@ -154,9 +164,19 @@ const menuItems = [
     icon: Helicopter,
     children: [
       {
-        key: "basic-animation",
-        title: "基础动画示例",
-        path: "/animation",
+        key: "limit-displacement",
+        title: "限制位移",
+        path: "/limit-displacement",
+      },
+      {
+        key: "gsap-animation",
+        title: "GSAP动画",
+        path: "/gsap-animation",
+      },
+      {
+        key: "light-shadow",
+        title: "灯光与阴影",
+        path: "/light-shadow",
       },
     ],
   },

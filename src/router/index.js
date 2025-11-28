@@ -127,11 +127,35 @@ const routes = [
     name: "material-advanced",
     component: () => import("../views/MaterialAdvanced.vue"),
   },
-  // 渲染设置
+  // 透明物体
   {
-    path: "/settings",
-    name: "settings",
-    component: () => import("../views/Settings.vue"),
+    path: "/transparent-object",
+    name: "transparent-object",
+    component: () => import("../views/TransparentObject.vue"),
+  },
+  // 清除物体
+  {
+    path: "/clear-object",
+    name: "clear-object",
+    component: () => import("../views/ClearObject.vue"),
+  },
+  // 限制位移
+  {
+    path: "/limit-displacement",
+    name: "limit-displacement",
+    component: () => import("../views/LimitDisplacement.vue"),
+  },
+  // GSAP动画
+  {
+    path: "/gsap-animation",
+    name: "gsap-animation",
+    component: () => import("../views/GSAPAnimation.vue"),
+  },
+  // 灯光与阴影
+  {
+    path: "/light-shadow",
+    name: "light-shadow",
+    component: () => import("../views/LightShadow.vue"),
   },
 ];
 

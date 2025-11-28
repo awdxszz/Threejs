@@ -134,6 +134,23 @@ function initGui() {
       // 检查目标模型是否存在且是网格模型
       if (target && target.isMesh) {
         target.material = matcap;
+        const paramsDuck1 = {
+          useBaseColorMap: !!originalMaterial.map,
+          useMatcap: true,
+        };
+        const f1 = gui.addFolder("Duck1-Matcap");
+        f1.add(paramsDuck1, "useBaseColorMap")
+          .name("使用原颜色贴图")
+          .onChange((v) => {
+            target.material.map = v ? originalMaterial.map : null;
+            target.material.needsUpdate = true;
+          });
+        f1.add(paramsDuck1, "useMatcap")
+          .name("启用Matcap")
+          .onChange((v) => {
+            target.material.matcap = v ? matcapTexture : null;
+            target.material.needsUpdate = true;
+          });
       }
     },
     undefined, // 加载进度回调
@@ -165,8 +182,6 @@ function initGui() {
       );
       bumpTexture.colorSpace = THREE.SRGBColorSpace;
       colorTexture.colorSpace = THREE.SRGBColorSpace;
-      // 之前的贴图
-      // let originalMaterial = target.material;
       // 为目标模型设置matcap材质
       const phong = new THREE.MeshPhongMaterial({
         map: colorTexture, // 颜色贴图
@@ -180,6 +195,43 @@ function initGui() {
       // 检查目标模型是否存在且是网格模型
       if (target && target.isMesh) {
         target.material = phong;
+        const paramsDuck2 = {
+          map: true,
+          specularMap: true,
+          bumpMap: true,
+          displacementMap: true,
+          displacementScale: phong.displacementScale,
+        };
+        const f2 = gui.addFolder("Duck2-Maps");
+        f2.add(paramsDuck2, "map")
+          .name("颜色贴图")
+          .onChange((v) => {
+            target.material.map = v ? colorTexture : null;
+            target.material.needsUpdate = true;
+          });
+        f2.add(paramsDuck2, "specularMap")
+          .name("高光贴图")
+          .onChange((v) => {
+            target.material.specularMap = v ? specularTexture : null;
+            target.material.needsUpdate = true;
+          });
+        f2.add(paramsDuck2, "bumpMap")
+          .name("凹凸贴图")
+          .onChange((v) => {
+            target.material.bumpMap = v ? bumpTexture : null;
+            target.material.needsUpdate = true;
+          });
+        f2.add(paramsDuck2, "displacementMap")
+          .name("位移贴图")
+          .onChange((v) => {
+            target.material.displacementMap = v ? bumpTexture : null;
+            target.material.needsUpdate = true;
+          });
+        f2.add(paramsDuck2, "displacementScale", 0, 0.2, 0.005)
+          .name("位移强度")
+          .onChange((val) => {
+            target.material.displacementScale = val;
+          });
       }
     },
     undefined, // 加载进度回调
@@ -222,6 +274,35 @@ function initGui() {
         // 检查目标模型是否存在且是网格模型
         if (target && target.isMesh) {
           target.material = reflectiveMaterial;
+          const paramsDuck3 = {
+            metalness: reflectiveMaterial.metalness,
+            roughness: reflectiveMaterial.roughness,
+            envMap: true,
+            envMapIntensity: reflectiveMaterial.envMapIntensity ?? 1,
+          };
+          const f3 = gui.addFolder("Duck3-PBR");
+          f3.add(paramsDuck3, "metalness", 0, 1, 0.01)
+            .name("金属度")
+            .onChange((v) => {
+              target.material.metalness = v;
+            });
+          f3.add(paramsDuck3, "roughness", 0, 1, 0.01)
+            .name("粗糙度")
+            .onChange((v) => {
+              target.material.roughness = v;
+            });
+          f3.add(paramsDuck3, "envMap")
+            .name("环境贴图")
+            .onChange((v) => {
+              target.material.envMap = v ? envMap : null;
+              target.material.needsUpdate = true;
+            });
+          f3.add(paramsDuck3, "envMapIntensity", 0, 2, 0.05)
+            .name("环境强度")
+            .onChange((val) => {
+              // MeshStandardMaterial 支持 envMapIntensity
+              target.material.envMapIntensity = val;
+            });
         }
       },
       undefined, // 加载进度回调
@@ -233,6 +314,44 @@ function initGui() {
     // 释放PMREM生成器的渲染目标
     pmrem.dispose();
   });
+
+  let params = {
+    aoMap: true,
+  };
+  // 实例化GLTF加载器 - 综合材质 - 剑
+  const loaderSword = new GLTFLoader();
+  loaderSword.load(
+    "/model/sword/sword.gltf",
+    (gltf) => {
+      const Sword = gltf.scene;
+      Sword.position.y -= 1;
+      scene.add(Sword);
+      let mesh = Sword.getObjectByName("Garde_Plane002");
+      if (
+        mesh &&
+        mesh.geometry &&
+        !mesh.geometry.attributes.uv2 &&
+        mesh.geometry.attributes.uv
+      ) {
+        // 为模型添加uv2属性，用于环境贴图
+        mesh.geometry.setAttribute("uv2", mesh.geometry.attributes.uv);
+      }
+      // 为模型添加环境贴图
+      const originalAoMap = mesh && mesh.material ? mesh.material.aoMap : null;
+      // 初始化环境贴图参数
+      params.aoMap = !!originalAoMap;
+      gui.add(params, "aoMap").onChange((value) => {
+        if (mesh && mesh.material) {
+          // 为模型添加环境贴图
+          mesh.material.aoMap = value ? originalAoMap : null;
+          // 为模型添加环境贴图需要更新
+          mesh.material.needsUpdate = true;
+        }
+      });
+    },
+    undefined, // 加载进度回调
+    (err) => console.error("Sword 加载失败:", err)
+  );
 }
 
 // 组件挂载时初始化场景
