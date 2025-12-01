@@ -148,8 +148,7 @@ function initGui() {
 
   // 整个城市
   loader.load(
-    // "/model/yygCityDraco.glb",
-    new URL(`/model/yygCity.glb`, import.meta.url).href,
+    new URL(`/model/yygCity2.glb`, import.meta.url).href,
     (gltf) => {
       scene.add(gltf.scene);
       gltf.scene.traverse((child) => {

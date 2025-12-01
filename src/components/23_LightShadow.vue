@@ -10,14 +10,6 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // 导入 lil-gui
 import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
-// 导入 HDR 环境贴图加载器
-import { HDRLoader } from "three/examples/jsm/loaders/HDRLoader.js";
-// 导入GLTF加载器
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-// 导入Draco加载器
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-// 导入GSAP动画库
-import gsap from "gsap";
 
 let scene, camera, renderer, animationId, controls;
 // 初始化场景
@@ -45,17 +37,13 @@ function initScene() {
   container.appendChild(renderer.domElement);
   renderer.domElement.style.width = "100%";
   renderer.domElement.style.height = "100%";
+  // 开启阴影
+  renderer.shadowMap.enabled = true;
 
   // 设置相机位置
-  camera.position.set(3, 3, 7);
+  camera.position.set(0, 5, 20);
   // 相机看向场景中心
   camera.lookAt(0, 0, 0);
-
-  const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-  scene.add(ambient);
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
-  dirLight.position.set(5, 10, 5);
-  scene.add(dirLight);
 
   // 渲染场景
   renderer.render(scene, camera);
@@ -114,76 +102,416 @@ function initGui() {
     gui.domElement.style.zIndex = "10";
   }
 
-  // 实例化GLTF加载器
-  const loader = new GLTFLoader();
-  // 配置 Draco 解码器以支持压缩网格
-  const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath("/draco/gltf/");
-  dracoLoader.preload();
-  loader.setDRACOLoader(dracoLoader);
+  // 添加几何体
+  const geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
+  // 添加物理材质
+  const material1 = new THREE.MeshPhysicalMaterial({
+    color: 0xccccff,
+  });
+  // 创建网格
+  const torusKnot = new THREE.Mesh(geometry, material1);
+  // 设置网格位置
+  torusKnot.position.set(4, 0, 0);
+  // 开启阴影
+  torusKnot.castShadow = true;
+  // 设置接收阴影
+  torusKnot.receiveShadow = true;
+  // 添加网格到场景
+  scene.add(torusKnot);
 
-  // 加载模型
-  loader.load(
-    new URL(`/model/Duck.glb`, import.meta.url).href,
-    (gltf) => {
-      scene.add(gltf.scene);
-      // 将模型居中并缩放
-      const box = new THREE.Box3().setFromObject(gltf.scene);
-      const center = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 2 / maxDim;
-      gltf.scene.scale.setScalar(scale);
-      gltf.scene.position.sub(center.multiplyScalar(scale));
+  // 添加球体
+  let sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
+  // 添加物理材质
+  const material2 = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+  });
+  // 创建网格
+  const sphere = new THREE.Mesh(sphereGeometry, material2);
+  // 开启阴影
+  sphere.castShadow = true;
+  // 接收阴影
+  sphere.receiveShadow = true;
+  // 添加网格到场景
+  scene.add(sphere);
 
-      // 让鸭子在x轴上下浮动
-      gsap.to(gltf.scene.position, {
-        y: `+=${0.2}`, // 浮动高度
-        duration: 1.2, // 浮动持续时间
-        ease: "sine.inOut", // 缓动函数，使浮动更自然
-        yoyo: true, // 往返运动，使鸭子在顶部和底部之间浮动
-        repeat: -1, // 无限循环
-      });
-      gsap.to(gltf.scene.position, {
-        x: `+=${4}`, // 浮动宽度
-        duration: 3.6, // 浮动持续时间
-        ease: "sine.inOut", // 缓动函数，使浮动更自然
-        yoyo: true, // 往返运动，使鸭子在顶部和底部之间浮动
-        repeat: -1, // 无限循环
-      });
-      // 让鸭子缓慢水平旋转
-      gsap.to(gltf.scene.rotation, {
-        y: `+=${Math.PI * 2}`, // 旋转角度，这里是360度
-        duration: 6, // 旋转持续时间
-        ease: "none", // 无缓动函数，使旋转更平滑
-        repeat: -1, // 无限循环
-      });
-    },
-    undefined, // 加载进度回调
-    (err) => console.error("building 加载失败:", err)
+  // 添加立方体
+  let boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+  // 添加物理材质
+  const material3 = new THREE.MeshPhysicalMaterial({
+    color: 0xffcccc,
+  });
+  // 创建网格
+  const box = new THREE.Mesh(boxGeometry, material3);
+  // 设置网格位置
+  box.position.set(-4, 0, 0);
+  // 添加网格到场景
+  scene.add(box);
+
+  // 创建平面
+  let planeGeometry = new THREE.PlaneGeometry(24, 24, 1, 1);
+  // 添加物理材质
+  let planeMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0x999999,
+  });
+  // 创建网格
+  let planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+  // 设置网格旋转
+  planeMesh.rotation.x = -Math.PI / 2;
+  // 设置网格位置
+  planeMesh.position.set(0, -4, 0);
+  // 添加网格到场景
+  scene.add(planeMesh);
+  // 设置接收阴影
+  planeMesh.receiveShadow = true;
+  // 设置开启阴影
+  planeMesh.castShadow = true;
+
+  // 添加环境光
+  const ambient = new THREE.AmbientLight(0xffffff, 0.1);
+  scene.add(ambient);
+
+  // 添加平行光
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  // 设置平行光位置
+  directionalLight.position.set(0, 10, 0);
+  // 默认平行光的目标是原点
+  directionalLight.target.position.set(0, 0, 0);
+  scene.add(directionalLight);
+
+  // 设置阴影相机参数
+  directionalLight.shadow.camera.near = 0.5; // 阴影相机近裁剪平面
+  directionalLight.shadow.camera.far = 50; // 阴影相机远裁剪平面
+  directionalLight.shadow.camera.left = -10; // 阴影相机左裁剪平面
+  directionalLight.shadow.camera.right = 10; // 阴影相机右裁剪平面
+  directionalLight.shadow.camera.top = 10; // 阴影相机上裁剪平面
+  directionalLight.shadow.camera.bottom = -10; // 阴影相机下裁剪平面
+
+  // 设置阴影贴图大小
+  directionalLight.shadow.mapSize.width = 2048; // 阴影贴图宽度
+  directionalLight.shadow.mapSize.height = 2048; // 阴影贴图高度
+
+  // 添加平行光辅助器
+  const directionalLightHelper = new THREE.DirectionalLightHelper(
+    directionalLight,
+    1
   );
+  scene.add(directionalLightHelper);
 
-  // 加载环境贴图（使用 PMREM 生成器获得更准确的反射）
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  // 编译等矩形贴图的着色器
-  pmrem.compileEquirectangularShader();
-  // 加载HDR环境贴图
-  const rgbeLoader = new HDRLoader();
-  rgbeLoader.load(
-    "/texture/Alex_Hart-Nature_Lab_Bones_2k.hdr",
-    (hdrTexture) => {
-      // 从 HDR 纹理生成环境贴图
-      const envMap = pmrem.fromEquirectangular(hdrTexture).texture;
-      // 设置场景背景贴图
-      // scene.background = envMap;
-      // 设置场景环境贴图
-      scene.environment = envMap;
-      // 释放HDR纹理和PMREM生成器
-      hdrTexture.dispose();
-      // 释放PMREM生成器的渲染目标
-      pmrem.dispose();
-    }
-  );
+  const dirParams = {
+    visible: true,
+    intensity: directionalLight.intensity,
+    color: `#${directionalLight.color.getHexString()}`,
+    x: directionalLight.position.x,
+    y: directionalLight.position.y,
+    z: directionalLight.position.z,
+    castShadow: !!directionalLight.castShadow,
+    helper: true,
+    targetX: directionalLight.target.position.x,
+    targetY: directionalLight.target.position.y,
+    targetZ: directionalLight.target.position.z,
+  };
+  const fDir = gui.addFolder("平行光");
+  fDir
+    .add(dirParams, "visible")
+    .name("显示")
+    .onChange((v) => {
+      directionalLight.visible = v;
+    });
+  fDir
+    .add(dirParams, "intensity", 0, 5, 0.01)
+    .name("强度")
+    .onChange((v) => {
+      directionalLight.intensity = v;
+    });
+  fDir
+    .addColor(dirParams, "color")
+    .name("颜色")
+    .onChange((v) => {
+      directionalLight.color.set(v);
+    });
+  fDir
+    .add(dirParams, "x", -20, 20, 0.1)
+    .name("位置X")
+    .onChange((v) => {
+      directionalLight.position.x = v;
+      directionalLightHelper.update();
+    });
+  fDir
+    .add(dirParams, "y", -20, 20, 0.1)
+    .name("位置Y")
+    .onChange((v) => {
+      directionalLight.position.y = v;
+      directionalLightHelper.update();
+    });
+  fDir
+    .add(dirParams, "z", -20, 20, 0.1)
+    .name("位置Z")
+    .onChange((v) => {
+      directionalLight.position.z = v;
+      directionalLightHelper.update();
+    });
+  fDir
+    .add(dirParams, "targetX", -10, 10, 0.1)
+    .name("目标X")
+    .onChange((v) => {
+      directionalLight.target.position.x = v;
+      directionalLightHelper.update();
+    });
+  fDir
+    .add(dirParams, "targetY", -10, 10, 0.1)
+    .name("目标Y")
+    .onChange((v) => {
+      directionalLight.target.position.y = v;
+      directionalLightHelper.update();
+    });
+  fDir
+    .add(dirParams, "targetZ", -10, 10, 0.1)
+    .name("目标Z")
+    .onChange((v) => {
+      directionalLight.target.position.z = v;
+      directionalLightHelper.update();
+    });
+  fDir
+    .add(dirParams, "castShadow")
+    .name("阴影")
+    .onChange((v) => {
+      directionalLight.castShadow = v;
+    });
+  fDir
+    .add(dirParams, "helper")
+    .name("辅助器")
+    .onChange((v) => {
+      directionalLightHelper.visible = v;
+    });
+
+  // 添加聚光灯
+  const spotLight = new THREE.SpotLight(0xffffff, 100);
+  // 设置聚光灯位置
+  spotLight.position.set(0, 10, 0);
+  // 默认聚光灯的目标是原点
+  spotLight.target.position.set(0, 0, 0);
+  // 开启阴影
+  spotLight.castShadow = true;
+  // 设置聚光灯角度
+  spotLight.angle = Math.PI / 6;
+  // 设置聚光灯距离
+  spotLight.distance = 20;
+  // 设置聚光灯软阴影范围
+  spotLight.penumbra = 0.5;
+  // 设置阴影贴图大小
+  spotLight.shadow.mapSize.width = 2048;
+  spotLight.shadow.mapSize.height = 2048;
+  scene.add(spotLight);
+
+  // 添加聚光灯辅助器
+  const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+  scene.add(spotLightHelper);
+
+  const spotParams = {
+    visible: true,
+    intensity: spotLight.intensity,
+    color: `#${spotLight.color.getHexString()}`,
+    x: spotLight.position.x,
+    y: spotLight.position.y,
+    z: spotLight.position.z,
+    angle: spotLight.angle,
+    distance: spotLight.distance,
+    penumbra: spotLight.penumbra,
+    castShadow: spotLight.castShadow,
+    helper: true,
+    targetX: spotLight.target.position.x,
+    targetY: spotLight.target.position.y,
+    targetZ: spotLight.target.position.z,
+  };
+  const fSpot = gui.addFolder("聚光灯");
+  fSpot
+    .add(spotParams, "visible")
+    .name("显示")
+    .onChange((v) => {
+      spotLight.visible = v;
+    });
+  fSpot
+    .add(spotParams, "intensity", 0, 200, 1)
+    .name("强度")
+    .onChange((v) => {
+      spotLight.intensity = v;
+    });
+  fSpot
+    .addColor(spotParams, "color")
+    .name("颜色")
+    .onChange((v) => {
+      spotLight.color.set(v);
+    });
+  fSpot
+    .add(spotParams, "x", -20, 20, 0.1)
+    .name("位置X")
+    .onChange((v) => {
+      spotLight.position.x = v;
+      spotLightHelper.update();
+    });
+  fSpot
+    .add(spotParams, "y", -20, 20, 0.1)
+    .name("位置Y")
+    .onChange((v) => {
+      spotLight.position.y = v;
+      spotLightHelper.update();
+    });
+  fSpot
+    .add(spotParams, "z", -20, 20, 0.1)
+    .name("位置Z")
+    .onChange((v) => {
+      spotLight.position.z = v;
+      spotLightHelper.update();
+    });
+  fSpot
+    .add(spotParams, "targetX", -10, 10, 0.1)
+    .name("目标X")
+    .onChange((v) => {
+      spotLight.target.position.x = v;
+      spotLightHelper.update();
+    });
+  fSpot
+    .add(spotParams, "targetY", -10, 10, 0.1)
+    .name("目标Y")
+    .onChange((v) => {
+      spotLight.target.position.y = v;
+      spotLightHelper.update();
+    });
+  fSpot
+    .add(spotParams, "targetZ", -10, 10, 0.1)
+    .name("目标Z")
+    .onChange((v) => {
+      spotLight.target.position.z = v;
+      spotLightHelper.update();
+    });
+  fSpot
+    .add(spotParams, "angle", 0, Math.PI / 2, 0.001)
+    .name("角度")
+    .onChange((v) => {
+      spotLight.angle = v;
+      spotLightHelper.update();
+    });
+  fSpot
+    .add(spotParams, "distance", 0, 50, 0.1)
+    .name("距离")
+    .onChange((v) => {
+      spotLight.distance = v;
+    });
+  fSpot
+    .add(spotParams, "penumbra", 0, 1, 0.01)
+    .name("柔和")
+    .onChange((v) => {
+      spotLight.penumbra = v;
+      spotLightHelper.update();
+    });
+  fSpot
+    .add(spotParams, "castShadow")
+    .name("阴影")
+    .onChange((v) => {
+      spotLight.castShadow = v;
+    });
+  fSpot
+    .add(spotParams, "helper")
+    .name("辅助器")
+    .onChange((v) => {
+      spotLightHelper.visible = v;
+    });
+
+  // 添加点光源
+  const pointLight = new THREE.PointLight(0xffffff, 100);
+  // 设置点光源位置
+  pointLight.position.set(0, 10, 0);
+  // 开启阴影
+  pointLight.castShadow = true;
+  // 设置阴影贴图大小
+  pointLight.shadow.mapSize.width = 2048;
+  pointLight.shadow.mapSize.height = 2048;
+  // 设置点光源距离
+  pointLight.distance = 20;
+  // 设置点光源衰减
+  pointLight.decay = 2;
+  scene.add(pointLight);
+
+  // 添加点光源辅助器
+  const pointLightHelper = new THREE.PointLightHelper(pointLight, 1);
+  scene.add(pointLightHelper);
+
+  const pointParams = {
+    visible: true,
+    intensity: pointLight.intensity,
+    color: `#${pointLight.color.getHexString()}`,
+    x: pointLight.position.x,
+    y: pointLight.position.y,
+    z: pointLight.position.z,
+    distance: pointLight.distance,
+    decay: pointLight.decay,
+    castShadow: pointLight.castShadow,
+    helper: true,
+  };
+  const fPoint = gui.addFolder("点光源");
+  fPoint
+    .add(pointParams, "visible")
+    .name("显示")
+    .onChange((v) => {
+      pointLight.visible = v;
+    });
+  fPoint
+    .add(pointParams, "intensity", 0, 200, 1)
+    .name("强度")
+    .onChange((v) => {
+      pointLight.intensity = v;
+    });
+  fPoint
+    .addColor(pointParams, "color")
+    .name("颜色")
+    .onChange((v) => {
+      pointLight.color.set(v);
+    });
+  fPoint
+    .add(pointParams, "x", -20, 20, 0.1)
+    .name("位置X")
+    .onChange((v) => {
+      pointLight.position.x = v;
+      pointLightHelper.update();
+    });
+  fPoint
+    .add(pointParams, "y", -20, 20, 0.1)
+    .name("位置Y")
+    .onChange((v) => {
+      pointLight.position.y = v;
+      pointLightHelper.update();
+    });
+  fPoint
+    .add(pointParams, "z", -20, 20, 0.1)
+    .name("位置Z")
+    .onChange((v) => {
+      pointLight.position.z = v;
+      pointLightHelper.update();
+    });
+  fPoint
+    .add(pointParams, "distance", 0, 50, 0.1)
+    .name("距离")
+    .onChange((v) => {
+      pointLight.distance = v;
+    });
+  fPoint
+    .add(pointParams, "decay", 0, 4, 0.01)
+    .name("衰减")
+    .onChange((v) => {
+      pointLight.decay = v;
+    });
+  fPoint
+    .add(pointParams, "castShadow")
+    .name("阴影")
+    .onChange((v) => {
+      pointLight.castShadow = v;
+    });
+  fPoint
+    .add(pointParams, "helper")
+    .name("辅助器")
+    .onChange((v) => {
+      pointLightHelper.visible = v;
+    });
 }
 
 // 组件挂载时初始化场景
