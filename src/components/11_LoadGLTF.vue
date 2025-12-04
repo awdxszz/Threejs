@@ -114,9 +114,7 @@ function initGui() {
   const loader = new GLTFLoader();
   // 配置 Draco 解码器以支持压缩网格
   const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath(
-    "https://www.gstatic.com/draco/versioned/decoders/1.5.6/"
-  );
+  dracoLoader.setDecoderPath("/draco/gltf/");
   loader.setDRACOLoader(dracoLoader);
   // 加载模型
   loader.load(

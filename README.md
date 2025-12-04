@@ -5,7 +5,8 @@
 - **Three.js**：跨平台 WebGL 3D 库  
 - **Lucide**：轻量 SVG 图标库  
 - **UnoCSS**：即时按需原子化 CSS 引擎  
-- **Vue Bits**：Vue 动效与创意 UI 组件库
+- **Vue Bits**：Vue 动效与创意 UI 组件库  
+- **GSAP**：高性能 JavaScript 动画库
 
 ## Three.js 简介
 
@@ -30,3 +31,9 @@ UnoCSS 是即时按需的原子化 CSS 引擎，核心不带偏见，所有工�
 Vue Bits 是面向 Vue 的动效与创意 UI 组件库，提供丰富的动画组件、背景效果与交互元素，轻量且支持按需引入，适合为页面增添动态与个性化体验。
 
 官网：<https://vue-bits.dev/>
+
+## GSAP 动画库简介
+
+GSAP（GreenSock Animation Platform）是高性能的 JavaScript 动画库，提供细粒度的时间线控制、强大的缓动函数以及丰富的插件生态（如 ScrollTrigger、MotionPath 等），适用于 DOM、SVG、Canvas、WebGL/Three.js 等多种场景的动效开发。
+
+官网：<https://greensock.com/gsap/>

@@ -39,6 +39,7 @@ function initScene() {
   renderer.domElement.style.height = "100%";
   // 开启阴影
   renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   // 设置相机位置
   camera.position.set(0, 5, 20);
@@ -135,15 +136,26 @@ function initGui() {
   scene.add(sphere);
 
   // 添加立方体
-  let boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+  let boxGeometry = new THREE.BoxGeometry(2, 2, 2);
+  // 加载透明纹理
+  let alphaTexture = new THREE.TextureLoader().load("/texture/16.jpg");
   // 添加物理材质
   const material3 = new THREE.MeshPhysicalMaterial({
-    color: 0xffcccc,
+    color: 0xffcccc, // 立方体颜色
+    alphaMap: alphaTexture, // 透明纹理
+    transparent: true, // 开启透明
+    side: THREE.DoubleSide, // 双面渲染
+    alphaTest: 0.5, // 透明度测试阈值
+    shadowSide: THREE.DoubleSide, // 阴影渲染方向
   });
   // 创建网格
   const box = new THREE.Mesh(boxGeometry, material3);
   // 设置网格位置
   box.position.set(-4, 0, 0);
+  // 开启阴影
+  box.castShadow = true;
+  // 设置接收阴影
+  box.receiveShadow = true;
   // 添加网格到场景
   scene.add(box);
 
@@ -176,7 +188,9 @@ function initGui() {
   directionalLight.position.set(0, 10, 0);
   // 默认平行光的目标是原点
   directionalLight.target.position.set(0, 0, 0);
+  directionalLight.castShadow = true;
   scene.add(directionalLight);
+  scene.add(directionalLight.target);
 
   // 设置阴影相机参数
   directionalLight.shadow.camera.near = 0.5; // 阴影相机近裁剪平面
@@ -189,6 +203,11 @@ function initGui() {
   // 设置阴影贴图大小
   directionalLight.shadow.mapSize.width = 2048; // 阴影贴图宽度
   directionalLight.shadow.mapSize.height = 2048; // 阴影贴图高度
+
+  // 添加相机辅助器
+  const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+  scene.add(cameraHelper);
+  cameraHelper.visible = false;
 
   // 添加平行光辅助器
   const directionalLightHelper = new THREE.DirectionalLightHelper(
@@ -209,6 +228,7 @@ function initGui() {
     targetX: directionalLight.target.position.x,
     targetY: directionalLight.target.position.y,
     targetZ: directionalLight.target.position.z,
+    camHelper: false,
   };
   const fDir = gui.addFolder("平行光");
   fDir
@@ -235,6 +255,7 @@ function initGui() {
     .onChange((v) => {
       directionalLight.position.x = v;
       directionalLightHelper.update();
+      cameraHelper.update();
     });
   fDir
     .add(dirParams, "y", -20, 20, 0.1)
@@ -242,6 +263,7 @@ function initGui() {
     .onChange((v) => {
       directionalLight.position.y = v;
       directionalLightHelper.update();
+      cameraHelper.update();
     });
   fDir
     .add(dirParams, "z", -20, 20, 0.1)
@@ -249,6 +271,7 @@ function initGui() {
     .onChange((v) => {
       directionalLight.position.z = v;
       directionalLightHelper.update();
+      cameraHelper.update();
     });
   fDir
     .add(dirParams, "targetX", -10, 10, 0.1)
@@ -256,6 +279,7 @@ function initGui() {
     .onChange((v) => {
       directionalLight.target.position.x = v;
       directionalLightHelper.update();
+      cameraHelper.update();
     });
   fDir
     .add(dirParams, "targetY", -10, 10, 0.1)
@@ -263,6 +287,7 @@ function initGui() {
     .onChange((v) => {
       directionalLight.target.position.y = v;
       directionalLightHelper.update();
+      cameraHelper.update();
     });
   fDir
     .add(dirParams, "targetZ", -10, 10, 0.1)
@@ -270,6 +295,7 @@ function initGui() {
     .onChange((v) => {
       directionalLight.target.position.z = v;
       directionalLightHelper.update();
+      cameraHelper.update();
     });
   fDir
     .add(dirParams, "castShadow")
@@ -283,6 +309,13 @@ function initGui() {
     .onChange((v) => {
       directionalLightHelper.visible = v;
     });
+  fDir
+    .add(dirParams, "camHelper")
+    .name("相机辅助器")
+    .onChange((v) => {
+      cameraHelper.visible = v;
+      cameraHelper.update();
+    });
 
   // 添加聚光灯
   const spotLight = new THREE.SpotLight(0xffffff, 100);
@@ -292,6 +325,7 @@ function initGui() {
   spotLight.target.position.set(0, 0, 0);
   // 开启阴影
   spotLight.castShadow = true;
+  scene.add(spotLight.target);
   // 设置聚光灯角度
   spotLight.angle = Math.PI / 6;
   // 设置聚光灯距离

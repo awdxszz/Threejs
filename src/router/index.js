@@ -157,6 +157,42 @@ const routes = [
     name: "light-shadow",
     component: () => import("../views/LightShadow.vue"),
   },
+  // 场景与物体交互
+  {
+    path: "/scene-object-interaction",
+    name: "scene-object-interaction",
+    component: () => import("../views/SceneObjectInteraction.vue"),
+  },
+  // 动画原理
+  {
+    path: "/animation-principle",
+    name: "animation-principle",
+    component: () => import("../views/AnimationPrinciple.vue"),
+  },
+  // 关键帧动画
+  {
+    path: "/keyframe-animation",
+    name: "keyframe-animation",
+    component: () => import("../views/KeyframeAnimation.vue"),
+  },
+  // 人物动作切换
+  {
+    path: "/character-action-switch",
+    name: "character-action-switch",
+    component: () => import("../views/CharacterActionSwitch.vue"),
+  },
+  // 粒子特效
+  {
+    path: "/particle-effect",
+    name: "particle-effect",
+    component: () => import("../views/ParticleEffect.vue"),
+  },
+  // 臂旋星系
+  {
+    path: "/arm-rotation-galaxy",
+    name: "arm-rotation-galaxy",
+    component: () => import("../views/ArmRotationGalaxy.vue"),
+  },
 ];
 
 const router = createRouter({

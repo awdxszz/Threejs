@@ -178,6 +178,36 @@ const menuItems = [
         title: "灯光与阴影",
         path: "/light-shadow",
       },
+      {
+        key: "scene-object-interaction",
+        title: "场景与物体交互",
+        path: "/scene-object-interaction",
+      },
+      {
+        key: "animation-principle",
+        title: "动画原理",
+        path: "/animation-principle",
+      },
+      {
+        key: "keyframe-animation",
+        title: "关键帧动画",
+        path: "/keyframe-animation",
+      },
+      {
+        key: "character-action-switch",
+        title: "角色动作切换",
+        path: "/character-action-switch",
+      },
+      {
+        key: "particle-effect",
+        title: "粒子特效",
+        path: "/particle-effect",
+      },
+      {
+        key: "arm-rotation-galaxy",
+        title: "臂旋星系",
+        path: "/arm-rotation-galaxy",
+      },
     ],
   },
   {

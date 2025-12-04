@@ -21,8 +21,8 @@ importers:
         specifier: ^0.554.0
         version: 0.554.0(vue@3.5.21)
       three:
-        specifier: ^0.180.0
-        version: 0.180.0
+        specifier: ^0.181.2
+        version: 0.181.2
       vue:
         specifier: ^3.5.21
         version: 3.5.21
@@ -963,8 +963,8 @@ packages:
   stylis@4.3.6:
     resolution: {integrity: sha512-yQ3rwFWRfwNUY7H5vpU0wfdkNSnvnJinhF9830Swlaxl03zsOjCfmX0ugac+3LtK0lYSgwL/KXc8oYL3mG4YFQ==}
 
-  three@0.180.0:
-    resolution: {integrity: sha512-o+qycAMZrh+TsE01GqWUxUIKR1AL0S8pq7zDkYOQw8GqfX8b8VoCKYUoHbhiX5j+7hr8XsuHDVU6+gkQJQKg9w==}
+  three@0.181.2:
+    resolution: {integrity: sha512-k/CjiZ80bYss6Qs7/ex1TBlPD11whT9oKfT8oTGiHa34W4JRd1NiH/Tr1DbHWQ2/vMUypxksLnF2CfmlmM5XFQ==}
 
   throttle-debounce@5.0.2:
     resolution: {integrity: sha512-B71/4oyj61iNH0KeCamLuE2rmKuTO5byTOSVwECM5FA7TiAiAW+UqTKZ9ERueC4qvgSttUhdmq1mXC3kJqGX7A==}
@@ -1944,7 +1944,7 @@ snapshots:
 
   stylis@4.3.6: {}
 
-  three@0.180.0: {}
+  three@0.181.2: {}
 
   throttle-debounce@5.0.2: {}
 
