@@ -7,6 +7,7 @@
 - **UnoCSS**：即时按需原子化 CSS 引擎  
 - **Vue Bits**：Vue 动效与创意 UI 组件库  
 - **GSAP**：高性能 JavaScript 动画库
+- **Cannon-ES**：轻量 3D 物理引擎
 
 ## Three.js 简介
 
@@ -37,3 +38,9 @@ Vue Bits 是面向 Vue 的动效与创意 UI 组件库，提供丰富的动画�
 GSAP（GreenSock Animation Platform）是高性能的 JavaScript 动画库，提供细粒度的时间线控制、强大的缓动函数以及丰富的插件生态（如 ScrollTrigger、MotionPath 等），适用于 DOM、SVG、Canvas、WebGL/Three.js 等多种场景的动效开发。
 
 官网：<https://greensock.com/gsap/>
+
+## Cannon-ES 物理引擎简介
+
+Cannon-ES 是一款基于 JavaScript 的轻量级 3D 物理引擎，支持刚体、约束、碰撞检测与碰撞响应，适合与 Three.js 搭配实现真实的重力、摩擦、弹性与关节等物理效果。提供现代化模块化用法（ESM），在浏览器与 Node 环境均可运行。
+
+官网：<https://pmndrs.github.io/cannon-es/>

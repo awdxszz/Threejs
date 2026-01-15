@@ -216,9 +216,19 @@ const menuItems = [
     icon: Hop,
     children: [
       {
-        key: "basic-animation",
-        title: "基础动画示例",
-        path: "/animation",
+        key: "physics-engine",
+        title: "物理引擎",
+        path: "/physics-engine",
+      },
+      {
+        key: "webgl-renderer",
+        title: "WEBGL渲染器",
+        path: "/webgl-renderer",
+      },
+      {
+        key: "torchlight-effect",
+        title: "孔明灯特效",
+        path: "/torchlight-effect",
       },
     ],
   },

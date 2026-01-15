@@ -193,6 +193,24 @@ const routes = [
     name: "arm-rotation-galaxy",
     component: () => import("../views/ArmRotationGalaxy.vue"),
   },
+  // 物理引擎
+  {
+    path: "/physics-engine",
+    name: "physics-engine",
+    component: () => import("../views/PhysicsEngine.vue"),
+  },
+  // WEBGL渲染器
+  {
+    path: "/webgl-renderer",
+    name: "webgl-renderer",
+    component: () => import("../views/WebGLRenderer.vue"),
+  },
+  // 孔明灯特效
+  {
+    path: "/torchlight-effect",
+    name: "torchlight-effect",
+    component: () => import("../views/TorchlightEffect.vue"),
+  },
 ];
 
 const router = createRouter({
