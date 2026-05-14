@@ -1,0 +1,12 @@
+varying vec2 vUv;
+
+void main() {
+  vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+  vec4 viewPosition = viewMatrix * modelPosition;
+  gl_Position = projectionMatrix * viewPosition;
+
+  // 设置点的大小
+  gl_PointSize = 100.0;
+  // 传递uv坐标到片元着色器
+  vUv = uv;
+}

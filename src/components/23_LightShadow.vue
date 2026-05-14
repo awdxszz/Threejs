@@ -212,7 +212,7 @@ function initGui() {
   // 添加平行光辅助器
   const directionalLightHelper = new THREE.DirectionalLightHelper(
     directionalLight,
-    1
+    1,
   );
   scene.add(directionalLightHelper);
 

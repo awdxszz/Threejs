@@ -211,6 +211,24 @@ const routes = [
     name: "torchlight-effect",
     component: () => import("../views/TorchlightEffect.vue"),
   },
+  // 烟雾特效
+  {
+    path: "/smoke-effect",
+    name: "smoke-effect",
+    component: () => import("../views/SmokeEffect.vue"),
+  },
+  // 水模型
+  {
+    path: "/water-model",
+    name: "water-model",
+    component: () => import("../views/WaterModel.vue"),
+  },
+  // 炫丽烟花特效
+  {
+    path: "/firework-effect",
+    name: "firework-effect",
+    component: () => import("../views/FireworkEffect.vue"),
+  },
 ];
 
 const router = createRouter({

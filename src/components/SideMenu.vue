@@ -230,6 +230,22 @@ const menuItems = [
         title: "孔明灯特效",
         path: "/torchlight-effect",
       },
+      {
+        key: "smoke-effect",
+        title: "烟雾特效",
+        path: "/smoke-effect",
+      },
+      {
+        key: "water-model",
+        title: "水模型",
+        path: "/water-model",
+      },
+      // 炫丽烟花特效
+      {
+        key: "firework-effect",
+        title: "炫丽烟花特效",
+        path: "/firework-effect",
+      },
     ],
   },
   {
@@ -298,8 +314,8 @@ const toggleCollapsed = () => {
             item.children
               ? toggleSubMenu(item.key)
               : item.path
-              ? router.push(item.path)
-              : null
+                ? router.push(item.path)
+                : null
           "
         >
           <div

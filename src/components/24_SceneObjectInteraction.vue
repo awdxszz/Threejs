@@ -141,7 +141,7 @@ function initGui() {
       basicScene = gltf.scene;
     },
     undefined, // 加载进度回调
-    (err) => console.error("building 加载失败:", err)
+    (err) => console.error("building 加载失败:", err),
   );
 
   // 创建变换控制器
@@ -159,7 +159,11 @@ function initGui() {
 
   let eventObj = {
     addScene: () => {
-      scene.add(basicScene);
+      if (basicScene && basicScene.isObject3D) {
+        scene.add(basicScene);
+      } else {
+        console.warn("模型尚未加载完成，请稍后再试！");
+      }
     },
     setTranslate: () => {
       tControls.setMode("translate");
@@ -283,7 +287,7 @@ function initGui() {
             .name(item.name + meshNumber[item.name]);
         },
         undefined, // 加载进度回调
-        (err) => console.error("mesh 加载失败:", err)
+        (err) => console.error("mesh 加载失败:", err),
       );
     };
     folderAddMesh.add(item, "addMesh").name(item.name);
@@ -308,7 +312,7 @@ function initGui() {
       hdrTexture.dispose();
       // 释放PMREM生成器的渲染目标
       pmrem.dispose();
-    }
+    },
   );
 }
 

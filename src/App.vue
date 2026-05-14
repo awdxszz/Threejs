@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from "vue";
 import { RouterView } from "vue-router";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons-vue";
 import SideMenu from "./components/SideMenu.vue";
 
 // 菜单折叠状态
@@ -27,18 +26,40 @@ const collapsed = ref(false);
         >
           <div class="flex items-center pl-[24px]">
             <!-- 折叠按钮 -->
-            <a-button
-              type="text"
-              shape="circle"
-              size="large"
+            <button
               @click="collapsed = !collapsed"
-              class="color-[#001529] mr-2"
+              class="w-10 h-10 mr-2 rounded-full flex-center text-[#001529] hover:bg-gray-100"
             >
-              <template #icon>
-                <MenuUnfoldOutlined v-if="collapsed" />
-                <MenuFoldOutlined v-else />
-              </template>
-            </a-button>
+              <svg
+                v-if="collapsed"
+                viewBox="0 0 24 24"
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+              <svg
+                v-else
+                viewBox="0 0 24 24"
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+                <line x1="8" y1="3" x2="8" y2="21" />
+              </svg>
+            </button>
             <h2 class="text-xl font-bold text-gray-800">Three.js Vue 示例</h2>
           </div>
           <div class="pr-[24px]">

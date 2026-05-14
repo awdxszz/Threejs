@@ -27,4 +27,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    host: true, // 允许局域网访问
+    port: 5173, // 你可以指定端口，默认是 5173
+  },
 });

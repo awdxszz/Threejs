@@ -23,6 +23,7 @@ function initScene() {
     headerSelector: "#top-navbar",
   });
 
+  // 创建透视相机PerspectiveCamera(视场角度, Canvas画布宽高比, 近裁截面, 远裁截面)
   camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
 
   // 创建渲染器
